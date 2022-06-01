@@ -1,2 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Multithread_JPEG_Codec;
+
+
+
+
+//testing
+
+var test = new TestingClass(TestingClass.builderAcceleratorType.Cpu);
