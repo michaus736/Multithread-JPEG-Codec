@@ -8,8 +8,6 @@ string filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar 
 //Stream consoleStream = Console.OpenStandardOutput();
 FileStream fileStream = File.Open(filePath, FileMode.Append, FileAccess.Write);
 
-Stream stream = fileStream;
-StreamWriter sw = new StreamWriter(stream);
 
 var test = new ExtensionClass(ExtensionClass.builderAcceleratorType.Cpu);
 
