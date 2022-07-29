@@ -76,7 +76,7 @@ internal class TestingClass
         stream.Dispose();
     }
 
-    static public void printDevices(StreamWriter sw, TestingClass.builderAcceleratorType acceleratorType = TestingClass.builderAcceleratorType.Cpu)
+    public static void printDevices(StreamWriter sw, TestingClass.builderAcceleratorType acceleratorType = TestingClass.builderAcceleratorType.Cpu)
     {
         ILGPU.Context context = Context.Create(builder =>
         {

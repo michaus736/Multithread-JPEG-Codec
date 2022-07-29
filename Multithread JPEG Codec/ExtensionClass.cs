@@ -11,115 +11,19 @@ using System.Threading.Tasks;
 using System.Runtime.Intrinsics;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Runtime.InteropServices;
 
 namespace Multithread_JPEG_Codec;
 
-public class ExtensionClass
+public static class ExtensionClass
 {
-    ILGPU.Context context;
-    public enum builderAcceleratorType
+
+    private static void DCT2D(PixelAccessor<Rgba32> acc)
     {
-        OpenCL, CUDA, Cpu, All
+        ///creating 8x8 chunks
+        ///
+        throw new NotImplementedException();
     }
-
-    public ExtensionClass(ExtensionClass.builderAcceleratorType type = builderAcceleratorType.OpenCL)
-    {
-        context = Context.Create(builder =>
-        {
-            switch (type)
-            {
-                case builderAcceleratorType.OpenCL:
-                    builder.OpenCL();
-                    break;
-                case builderAcceleratorType.CUDA:
-                    builder.Cuda();
-                    break;
-                case builderAcceleratorType.Cpu:
-                    builder.CPU();
-                    break;
-                case builderAcceleratorType.All:
-                    builder.AllAccelerators();
-                    break;
-                default:
-                    builder.OpenCL();
-                    break;
-            }
-        });
-        
-        foreach (var device in context.GetPreferredDevices(preferCPU: false, matchingDevicesOnly: false))
-        {
-            using Accelerator accelerator = device.CreateAccelerator(context);
-            using StringWriter stringWriter = new StringWriter();
-            accelerator.PrintInformation(stringWriter);
-            Console.WriteLine("hardware: {0}, accelerator: {1}",
-                device.Name,
-                accelerator.Name
-                );
-            
-            Console.WriteLine("accelerator info: {0}", stringWriter.ToString());
-            Console.WriteLine();
-            accelerator.Dispose();
-
-        }
-    }
-
-    public static void ConvertToYCbCr()
-    {
-        var bmpsFiles = Directory.EnumerateFiles(Resource.bmpDirectory, "*.bmp");
-
-        foreach (var bmpPath in bmpsFiles)
-        {
-            
-            using Image<Rgba32> image = Image.Load<Rgba32>(bmpPath);
-            //if (image.Height % 8 != 0 || image.Width % 8 != 0) throw new Exception("wrong image resolution");
-            //converting to ycbcr
-            image.ProcessPixelRows(acc =>
-            {
-                for(int y = 0; y < acc.Height; y++)
-                {
-                    Span<Rgba32> row = acc.GetRowSpan(y);
-                    for (int x = 0; x < row.Length; x++)
-                    {
-                        ref Rgba32 pixel = ref row[x];
-                        pixel = ConvertToYCbCr(pixel);
-                        
-                    }
-
-                }
-                //subsampling 4:2:0
-                Subsampling420(acc);
-
-
-                //back to rgb color scale
-                for (int y = 0; y < acc.Height; y++)
-                {
-                    Span<Rgba32> row = acc.GetRowSpan(y);
-                    for (int x = 0; x < row.Length; x++)
-                    {
-                        ref Rgba32 pixel = ref row[x];
-                        pixel = ConvertRgba(pixel);
-
-                    }
-
-                }
-
-
-
-
-            });
-
-            //saving 
-            string fileName = Path.GetFileName(bmpPath);
-            string newFilePath = Resource.jpegDirectory + fileName;
-
-            image.SaveAsBmp(newFilePath);
-
-
-
-        }
-
-    }
-
 
     private static void Subsampling420(PixelAccessor<Rgba32> acc , char type = 'a')
     {

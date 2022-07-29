@@ -9,8 +9,6 @@ string filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar 
 FileStream fileStream = File.Open(filePath, FileMode.Append, FileAccess.Write);
 
 
-var test = new ExtensionClass(ExtensionClass.builderAcceleratorType.Cpu);
-
 
 
 ///todo:
