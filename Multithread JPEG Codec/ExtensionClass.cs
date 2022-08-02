@@ -12,20 +12,58 @@ using System.Runtime.Intrinsics;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Runtime.InteropServices;
+using Multithread_JPEG_Codec.Models;
 
 namespace Multithread_JPEG_Codec;
 
 public static class ExtensionClass
 {
-
-    private static void DCT2D(PixelAccessor<Rgba32> acc)
+    public enum SubSamplingType
     {
-        ///creating 8x8 chunks
-        ///
-        throw new NotImplementedException();
+        average,
+        leftTopPixel
     }
 
-    private static void Subsampling420(PixelAccessor<Rgba32> acc , char type = 'a')
+
+    public static void SubSampling420(ref YCbCrPixel[,] pixels, SubSamplingType type = SubSamplingType.average)
+    {
+        for (int i = 0; i < pixels.GetLength(0) - 1; i += 2)
+        {
+            for (var j = 0; j < pixels.GetLength(1) - 1; j += 2)
+            {
+                ref YCbCrPixel pixel1 = ref pixels[i, j];
+                ref YCbCrPixel pixel2 = ref pixels[i, j + 1];
+                ref YCbCrPixel pixel3 = ref pixels[i + 1, j];
+                ref YCbCrPixel pixel4 = ref pixels[i + 1, j + 1];
+
+                float subSampledCb = type switch
+                {
+                    SubSamplingType.average => (pixel1.Cb + pixel2.Cb + pixel3.Cb + pixel4.Cb) / 4,
+                    SubSamplingType.leftTopPixel => pixel1.Cb,
+                    _ => (pixel1.Cb + pixel2.Cb + pixel3.Cb + pixel4.Cb) / 4
+                };
+                float subSampledCr = type switch
+                {
+                    SubSamplingType.average => (pixel1.Cr + pixel2.Cr + pixel3.Cr + pixel4.Cr) / 4,
+                    SubSamplingType.leftTopPixel => pixel1.Cr,
+                    _ => (pixel1.Cr + pixel2.Cr + pixel3.Cr + pixel4.Cr) / 4
+                };
+
+                pixel1.Cr = subSampledCr;
+                pixel1.Cb = subSampledCb;
+                pixel2.Cr = subSampledCr;
+                pixel2.Cb = subSampledCb;
+                pixel3.Cr = subSampledCr;
+                pixel3.Cb = subSampledCb;
+                pixel4.Cr = subSampledCr;
+                pixel4.Cb = subSampledCb;
+                
+
+
+            }
+        }
+    }
+    private static void SubSampling420(PixelAccessor<Rgba32> acc , char type = 'a')
     {
         for(int y = 0; y < acc.Height - 1; y+=2)
         {
@@ -69,31 +107,37 @@ public static class ExtensionClass
 
     }
 
-    public static Rgba32 ConvertToYCbCr(Rgba32 rgba)
+    public static byte ConvertRGBFloatToByte(float value)
     {
-        
-        return new Rgba32(
-            (float)((float)(16 + 65.738 * rgba.R / 256 + 129.057 * rgba.G / 256 + 25.064 * rgba.B / 256) / 256.0),
-            (float)((float)(128 - 37.945 * rgba.R / 256 - 74.494 * rgba.G / 256 + 112.439 * rgba.B / 256) / 256.0),
-            (float)((float)(128 + 112.439 * rgba.R / 256 - 94.154 * rgba.G / 256 - 18.285 * rgba.B / 256) / 256.0),
-            (float)rgba.A
-
-       );
-        
+        var temp = (int)Math.Floor(value >= 1.0 ? (double)255 : (double)(value * 256));
+        return (byte)temp;
     }
 
-    public static Rgba32 ConvertRgba(Rgba32 pixel)
+    public static YCbCrPixel ConvertToYCbCr(RGBPixel rgb)
     {
-
-        return new Rgba32(
-            (float)((float)(298.082 * pixel.R / 256 + 408.583 * pixel.B / 256 - 222.921) / 256.0),
-            (float)((float)(298.082 * pixel.R / 256 - 100.291 * pixel.G / 256 - 208.120 * pixel.B / 256 + 135.576) / 256.0),
-            (float)((float)(298.082 * pixel.R / 256 + 516.412 * pixel.G / 256 - 276.836) / 256.0),
-            (float)pixel.A
-       );
-
-
+        float fr = (float)rgb.R / 255;
+        float fg = (float)rgb.G / 255;
+        float fb = (float)rgb.B / 255;
+        return new YCbCrPixel {
+            Y = (float)(0.2989 * fr + 0.5866 * fg + 0.1145 * fb),
+            Cb = (float)(-0.1687 * fr - 0.3313 * fg + 0.5000 * fb),
+            Cr = (float)(0.5000 * fr - 0.4184 * fg - 0.0816 * fb),
+       };
     }
+
+    public static RGBPixel ConvertToRGB(YCbCrPixel ycbcr)
+    {
+        float r = Math.Max(0.0f, Math.Min(1.0f, (float)(ycbcr.Y + 0.0000 * ycbcr.Cb + 1.4022 * ycbcr.Cr)));
+        float g = Math.Max(0.0f, Math.Min(1.0f, (float)(ycbcr.Y - 0.3456 * ycbcr.Cb - 0.7145 * ycbcr.Cr)));
+        float b = Math.Max(0.0f, Math.Min(1.0f, (float)(ycbcr.Y + 1.7710 * ycbcr.Cb + 0.0000 * ycbcr.Cr)));
+
+        return new RGBPixel { 
+            R = (byte)(r * 255),
+            G = (byte)(g * 255),
+            B = (byte)(b * 255)
+        };
+    }
+    
 
 
 }

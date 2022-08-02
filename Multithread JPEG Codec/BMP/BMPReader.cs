@@ -18,7 +18,6 @@ public class BMPReader
     readonly BMPHeader header;
     readonly BMPDIBHeader DIBheader;
     //testing
-    private Bitmap bitmap;
 
     #endregion
 
@@ -100,7 +99,6 @@ public class BMPReader
         
         fileName = filePath;
 
-        bitmap = new Bitmap(filePath);
 
         
 
@@ -125,53 +123,35 @@ public class BMPReader
         byte[] colorData = fileData.Skip(header.tablePixelOffset).ToArray();
 
         this.tablePixel = new RGBPixel[DIBheader.DIBWitdh, DIBheader.DIBHeight];
-        var colorPixelTable = new Color[DIBheader.DIBWitdh, DIBheader.DIBHeight];
+        //var colorPixelTable = new Color[DIBheader.DIBWitdh, DIBheader.DIBHeight];
         int index = 0;
-
-        for (int i = tablePixel.GetLength(1) - 1; i > 0; i--)
+        
+        //i - height, j - width
+        for (int i = tablePixel.GetLength(1) - 1; i >= 0; i--)
         {
-            for (int j = 0; j < tablePixel.GetLength(0); j++)
+            for (int j = 0; j < tablePixel.GetLength(0); j++) 
             {
-                if(DIBheader.BitsPerPixel == 24) {
+                if(this.DIBheader.BitsPerPixel == 24)
+                {
                     byte R = colorData[index++];
                     byte G = colorData[index++];
                     byte B = colorData[index++];
 
-                    tablePixel[j, i] = new RGBPixel
-                    {
-                        R = B,
-                        G = G,
-                        B = R
-                    };
-                    colorPixelTable[j, i] = Color.FromArgb(B,G,R);
-                    
+                    tablePixel[j, i] = new RGBPixel{R = B, G = G, B = R};
+                    //colorPixelTable[j, i] = Color.FromArgb(B,G,R);
 
                 }
-                else if(DIBheader.BitsPerPixel == 8)
+                else if(this.DIBheader.BitsPerPixel == 8)
                 {
                     byte grey = colorData[index++];
-                    tablePixel[j, i] = new RGBPixel
-                    {
-                        R = grey,
-                        G = grey,
-                        B = grey
-                    };
-                    colorPixelTable[j, i] = Color.FromArgb(grey, grey, grey);
+                    tablePixel[j, i] = new RGBPixel { R = grey, G = grey, B = grey };
                 }
+                   
+               
 
 
             }
         }
-        bitmap = new Bitmap(DIBheader.DIBWitdh, DIBheader.DIBHeight);
-        for(int i = 0; i < DIBheader.DIBWitdh; i++)
-        {
-            for (int j = 0; j < DIBheader.DIBHeight; j++)
-            {
-                bitmap.SetPixel(i, j, colorPixelTable[i, j]);
-            }
-        }
-        bitmap.Save($@"C:\Users\micha\OneDrive\Obrazy\jpeg test pictures\{this.fileName}res.bmp");
-
     }
 
 
