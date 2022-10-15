@@ -118,11 +118,12 @@ public class BMPReader
     }
 
 
-    private void BMPPopulatePixels()
+    private void BMPPopulatePixels(short chunkSize = 8)
     {
+        
         byte[] colorData = fileData.Skip(header.tablePixelOffset).ToArray();
 
-        this.tablePixel = new RGBPixel[DIBheader.DIBWitdh, DIBheader.DIBHeight];
+        this.tablePixel = new RGBPixel[DIBheader.DIBWitdh / chunkSize * chunkSize, DIBheader.DIBHeight / chunkSize * chunkSize];
         //var colorPixelTable = new Color[DIBheader.DIBWitdh, DIBheader.DIBHeight];
         int index = 0;
         
@@ -146,7 +147,7 @@ public class BMPReader
                     byte grey = colorData[index++];
                     tablePixel[j, i] = new RGBPixel { R = grey, G = grey, B = grey };
                 }
-                   
+                
                
 
 
