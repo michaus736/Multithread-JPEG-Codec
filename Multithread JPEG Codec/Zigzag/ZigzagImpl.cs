@@ -30,7 +30,7 @@ public class ZigzagImpl
             throw new NotSupportedException($"chunk size for zigzag is not supported, chunksize: {chunkSize}, supported: {String.Join(", ", supportedChunkSize)}");
         }
         uint index = 0;
-        int chunksq = chunkSize * chunkSize;
+        uint chunksq = (uint)(chunkSize * chunkSize);
         int rowChunkNum = pixels.Height / chunkSize;
         int colChunkNum = pixels.Width / chunkSize;
 
@@ -40,21 +40,32 @@ public class ZigzagImpl
         {
             for(int j = 0; j < colChunkNum; j++)
             {
+                var getChunkTextSlice = pixels.Slice(i, j, chunkSize, chunkSize);
                 //getting pixels to 1 dimentional array from individual chunks
                 for(int k = 0; k < chunkSize; k++)
                 {
                     for(int l = 0; l < chunkSize; l++)
                     {
-                        zigzagRes[index++]= pixels[k + i * chunkSize, l + j * chunkSize];
+                        ref YCbCrPixel pixel = ref getChunkTextSlice[k,l];
+                        zigzagRes[index + zigzagDirection8[k, l]] = pixel;
+                        
                     }
                 }
+
+                index += chunksq;
             }
         }
-        
-
-
 
         return zigzagRes;
+    }
+
+    public static YCbCrPixel[,] PreformInverseZigzag(Span<YCbCrPixel> zigzagSpan, int height, int width, int chunkSize = 8)
+    {
+        //validate
+
+
+
+        return null;
     }
 
 }

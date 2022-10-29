@@ -121,7 +121,7 @@ public class BMPReader
 
     private void BMPPopulatePixels(short chunkSize = 8)
     {
-        if(supportedChunkSize.Contains(chunkSize))
+        if(!supportedChunkSize.Contains(chunkSize))
         {
             throw new NotSupportedException("size of chunks is not supported");
         }
