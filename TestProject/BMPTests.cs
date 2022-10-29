@@ -212,4 +212,38 @@ public class BMPTests
 
 
     }
+    [Fact]
+    public void ExecuteZigzag()
+    {
+        BMPReader reader = new BMPReader(bmpPath);
+
+        //convert to ycbcr
+
+        var colorTable = reader.tablePixel;
+        YCbCrPixel[,] scaledTable = new YCbCrPixel[colorTable.GetLength(0), colorTable.GetLength(1)];
+
+        if (colorTable is null) throw new Exception("error accessing pixel table");
+
+        for (int i = 0; i < colorTable.GetLength(0); i++)
+        {
+            for (int j = 0; j < colorTable.GetLength(1); j++)
+            {
+                scaledTable[i, j] = ExtensionClass.ConvertToYCbCr(colorTable[i, j]);
+            }
+        }
+
+
+        //subsampling
+
+        ExtensionClass.SubSampling420(ref scaledTable, ExtensionClass.SubSamplingType.average);
+
+        //2dct
+
+        int temp = 0;
+        Multithread_JPEG_Codec.DCT.DCTHandler.PerformDCT(scaledTable);
+
+        //zigzag
+        var zigzagArray = Multithread_JPEG_Codec.Zigzag.ZigzagImpl.PerformZigZag(scaledTable);
+    }
+    
 }

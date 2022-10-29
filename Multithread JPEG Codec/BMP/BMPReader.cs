@@ -24,6 +24,7 @@ public class BMPReader
     #region supportedTypes
     internal readonly short[] supportedBitsPerPixel = new short[] { 8, 24 };
     internal readonly uint[] supportedCompressionFormats = new uint[] { 0 };
+    internal readonly int[] supportedChunkSize = new int[] { 8 };
     #endregion
 
 
@@ -120,6 +121,10 @@ public class BMPReader
 
     private void BMPPopulatePixels(short chunkSize = 8)
     {
+        if(supportedChunkSize.Contains(chunkSize))
+        {
+            throw new NotSupportedException("size of chunks is not supported");
+        }
         
         byte[] colorData = fileData.Skip(header.tablePixelOffset).ToArray();
 

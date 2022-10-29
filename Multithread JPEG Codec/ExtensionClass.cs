@@ -102,11 +102,12 @@ public static class ExtensionClass
                 pixel4 = subsampledPixel;
             }
         }
-
+        int a = 0;
+        
 
 
     }
-
+    
     public static byte ConvertRGBFloatToByte(float value)
     {
         var temp = (int)Math.Floor(value >= 1.0 ? (double)255 : (double)(value * 256));
