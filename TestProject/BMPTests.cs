@@ -3,7 +3,10 @@ using System.Drawing;
 using Multithread_JPEG_Codec;
 using Multithread_JPEG_Codec.BMP;
 using Multithread_JPEG_Codec.Models;
+using MyNamespace;
+using OpenCvSharp;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 
 
@@ -12,7 +15,7 @@ namespace TestProject;
 public class BMPTests
 {
     string[] bmpFilesPaths;
-    string bmpPath = @"C:\Users\micha\OneDrive\Obrazy\jpeg test pictures\lena_gray.bmp";
+    string bmpPath = @"C:\Users\micha\OneDrive\Obrazy\jpeg test pictures\boats24.bmp";
     string bmpDirectory;
     public BMPTests()
     {
@@ -24,6 +27,25 @@ public class BMPTests
     }
 
 
+
+
+    [Fact]
+    public void Convert_ShouldConvertBmpToJpeg()
+    {
+        // Arrange
+        
+        var inputFilePath = bmpDirectory+@"\boats24.bmp";
+        var outputFilePath = bmpDirectory+@"\results\boats24.jpg";
+        // Act
+        MyNamespace.BmpToJpegConverter.Convert(inputFilePath, outputFilePath, 50);
+
+        // Assert
+        Assert.True(File.Exists(outputFilePath));
+        using (var outputMat = Cv2.ImRead(outputFilePath))
+        {
+            Assert.Equal(MatType.CV_8UC3, outputMat.Type());
+        }
+    }
     [Fact]
     public void GettingPixelsFromBmp()
     {

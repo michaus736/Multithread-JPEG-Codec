@@ -62,10 +62,17 @@ public class ZigzagImpl
     public static YCbCrPixel[,] PreformInverseZigzag(Span<YCbCrPixel> zigzagSpan, int height, int width, int chunkSize = 8)
     {
         //validate
+        if (zigzagSpan.IsEmpty) throw new Exception("zigzag array is null");
+        if (zigzagSpan.Length != height * width) throw new Exception("zigzag length isn't equal lenght of 2d span");
+        if (zigzagSpan.Length % chunkSize != 0 && height % chunkSize != 0 && width % chunkSize != 0) throw new Exception($"zigzag length: {zigzagSpan.Length}, height: {height}, width: {width} cannot be chunked into equal chunks of: {chunkSize}");
+
+        int rowChunksNum = height / chunkSize;
+        int colChunksNum = width / chunkSize;
+
+        YCbCrPixel[,] reversed2D = new YCbCrPixel[height, width];
 
 
-
-        return null;
+        return reversed2D;
     }
 
 }
