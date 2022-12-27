@@ -1,9 +1,11 @@
 ﻿using OpenCvSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace MyNamespace
+namespace MultithreadEncodeOpenCV
 {
     public static class BmpToJpegConverter
     {
@@ -49,7 +51,7 @@ namespace MyNamespace
 
             // Save the final combined image to the specified file path
             Cv2.ImWrite(jpegFilePath, finalJpegMat, new ImageEncodingParam(ImwriteFlags.JpegQuality, quality));
-
+            /*
             using (var jpegMat = Cv2.ImRead(jpegFilePath))
             {
                 if (jpegMat.Empty())
@@ -62,8 +64,9 @@ namespace MyNamespace
                     throw new Exception("Image size does not match after conversion");
                 }
             }
+            */
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private static Task<Mat> ConvertRegion(Mat bmpMat, int threadIndex)
         {
             var region = CalculateRegion(bmpMat.Size(), threadIndex);

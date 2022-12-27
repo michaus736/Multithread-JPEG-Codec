@@ -1,30 +1,12 @@
-﻿using Multithread_JPEG_Codec;
+﻿
+using BenchmarkDotNet.Running;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MultithreadEncodeOpenCV;
+/*
+string inputFilePath = "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\boats24.bmp",
+    outputFilePath = "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\results\\boats24.jpg";
 
+BmpToJpegConverter.Convert(inputFilePath, outputFilePath, 20);
+*/
 
-
-
-//testing
-string filePath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "devices_list.txt";
-//Stream consoleStream = Console.OpenStandardOutput();
-FileStream fileStream = File.Open(filePath, FileMode.Append, FileAccess.Write);
-
-
-
-
-///todo:
-///serilog
-///loading images in foreach
-///apply ilgpu 
-///
-///jpeg direction:
-///extract rgb from image
-///convert to YCbCr
-///sampling to blocks
-///2d dct
-///quantization(quaz tables)
-///zig zag scan
-///entropy coding:
-///     extract ac dc components
-///     encoding
-///      huffmann encoding
-///create jpeg file
+var summary = BenchmarkRunner.Run<Multithread_JPEG_Codec.Benchmarks.BmpToJpegConverterBenchmarks>();
