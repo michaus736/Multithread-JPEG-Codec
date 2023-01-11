@@ -5,7 +5,8 @@
       "distributionName": ""
     },
     "Profile 1": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--bmpFile \"C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\boats24.bmp\" --resultFile \"C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\results\\boats24.bmp\"\r\n--quality 60"
     }
   }
 }

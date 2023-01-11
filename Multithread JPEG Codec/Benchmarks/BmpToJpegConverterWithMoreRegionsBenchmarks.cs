@@ -10,23 +10,14 @@ using BenchmarkDotNet.Attributes;
 using MultithreadEncodeOpenCV;
 
 namespace Multithread_JPEG_Codec.Benchmarks;
-
 [SimpleJob]
 [MemoryDiagnoser]
 [ThreadingDiagnoser]
 [BenchmarkDotNet.Attributes.MedianColumn]
 [BenchmarkDotNet.Attributes.MeanColumn]
 [BenchmarkCategory("Conversion")]
-public class BmpToJpegConverterBenchmarks
+public class BmpToJpegConverterWithMoreRegionsBenchmarks
 {
-    public static readonly string[] InputBmpFileNames =
-    {
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\boats24.bmp",
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\lena24.bmp",
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\MARBLES.BMP",
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\sample_5184×3456.bmp"
-    };
-
     public static readonly string ResultsFolder = "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\results\\";
     public static readonly string InputFolder = "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\";
 
@@ -36,48 +27,34 @@ public class BmpToJpegConverterBenchmarks
         "MARBLES.BMP",
         "sample_5184×3456.bmp")]
     public string InputBmpFileName { get; set; } = string.Empty;
-    
+
+    [Params(1, 3, 4, 16, 100)]
+    public int RegionCount { get; set; }
 
 
-    [Params(20, 50, 90, 95)]
-    public int Quality { get; set; }
 
 
     [Benchmark]
-    public void ConvertWithNormalPriority()
+    public void Convert()
     {
         Thread.CurrentThread.Priority = ThreadPriority.Normal;
-        ConvertAndMeasurePerformance();
-    }
-
-    [Benchmark]
-    public void ConvertWithAboveNormalPriority()
-    {
-        Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
-        ConvertAndMeasurePerformance();
-    }
-
-    [Benchmark]
-    public void ConvertWithHighestPriority()
-    {
-        Thread.CurrentThread.Priority = ThreadPriority.Highest;
         ConvertAndMeasurePerformance();
     }
 
     private void ConvertAndMeasurePerformance()
     {
         string inputBmpFileName = Path.Combine(InputFolder, InputBmpFileName);
-        string outputJpegFileName = Path.Combine(ResultsFolder, Path.GetFileNameWithoutExtension(InputBmpFileName) + Guid.NewGuid().ToString() +  ".jpg");
+        string outputJpegFileName = Path.Combine(ResultsFolder, Path.GetFileNameWithoutExtension(InputBmpFileName) + Guid.NewGuid().ToString() + ".jpg");
 
         var stopwatch = Stopwatch.StartNew();
 
-        BmpToJpegConverter.Convert(
+        BmpToJpegConverter.ConvertWithMoreRegions(
             inputBmpFileName,
             outputJpegFileName,
-            Quality);
+            95,
+            RegionCount);
 
         stopwatch.Stop();
         Console.WriteLine($"Conversion took {stopwatch.ElapsedMilliseconds} milliseconds");
     }
-
 }
