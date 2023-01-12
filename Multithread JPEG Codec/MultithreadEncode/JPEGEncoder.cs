@@ -68,7 +68,7 @@ namespace MultithreadEncodeOpenCV
         }
 
 
-        public static void Convert(string bmpFilePath, string jpegFilePath, int quality = 95)
+        public static void Convert(string bmpFilePath, string jpegFilePath, int quality = 95, int resetInterval = 0)
         {
             if (!File.Exists(bmpFilePath))
             {
@@ -109,8 +109,12 @@ namespace MultithreadEncodeOpenCV
             Cv2.HConcat(jpegMatList, finalJpegMat);
 
             // Save the final combined image to the specified file path
-            Cv2.ImWrite(jpegFilePath, finalJpegMat, new ImageEncodingParam(ImwriteFlags.JpegQuality, quality));
-            
+            Cv2.ImWrite(jpegFilePath, finalJpegMat, new ImageEncodingParam[]
+                {
+                    new ImageEncodingParam(ImwriteFlags.JpegQuality, quality),
+                    new ImageEncodingParam(ImwriteFlags.JpegRstInterval, resetInterval)
+                }
+            );
         }
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private static Task<Mat> ConvertRegion(Mat bmpMat, int threadIndex)

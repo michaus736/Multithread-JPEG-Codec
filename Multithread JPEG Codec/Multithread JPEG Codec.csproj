@@ -10,8 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.2" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.3" />
     <PackageReference Include="OpenCvSharp4" Version="4.6.0.20220608" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.6.0.20220608" />
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.6.0.20220608" />
