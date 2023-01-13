@@ -14,8 +14,18 @@ using MultithreadEncodeOpenCV;
 
 //BmpToJpegConverter.ConvertWithMoreRegions(inputFilePath, outputFilePath, 20, 5);
 
+/*try
+{
+    BenchmarkRunner.Run<Multithread_JPEG_Codec.Benchmarks.BmpToJpegConverterBenchmarks>();
 
-//var summary = BenchmarkRunner.Run<Multithread_JPEG_Codec.Benchmarks.BmpToJpegConverterBenchmarks>();
+}catch(Exception ex) {
+    global::System.Console.WriteLine(ex.Message);
+    global::System.Console.WriteLine(ex?.InnerException?.Message ?? "no inner exception");
+    global::System.Console.WriteLine(ex?.StackTrace ?? "no stack trace");
+}
+*/
+
+
 //var summary = BenchmarkRunner.Run<Multithread_JPEG_Codec.Benchmarks.BmpToJpegConverterWithMoreRegionsBenchmarks>();
 
 Dictionary<string, string> startArgs = new Dictionary<string, string>().ConfigureArgs(args);
@@ -74,6 +84,10 @@ catch (Exception ex)
 {
     global::System.Console.WriteLine(ex.Message);
     global::System.Console.WriteLine(ex?.InnerException?.Message ?? "no inner exception occured");
-    global::System.Console.WriteLine(ex?.StackTrace ?? "no stack trace");
+    if(ex is ArgumentException)
+    {
+        global::System.Console.WriteLine(ex?.StackTrace ?? "no stack trace");
+
+    }
 }
 

@@ -2,14 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MultithreadEncodeOpenCV
 {
     public static class BmpToJpegConverter
     {
-
+        public static readonly Dictionary<string, string> imageSignature = new Dictionary<string, string>()
+        { 
+            { "GIF8", "GIF"},
+            {"PNG", "PNG"},
+            {"II", "TIFF"},
+            { "MM", "TIFF"},
+            {"ÿØÿ", "JPEG" },
+            { Encoding.ASCII.GetString(new byte[]{0x0, 0x0, 0x1, 0x0}), "ICO" },
+            {"CWS", "SWF" },
+            {"FWS", "SWF" },
+            {"", "" }
+        };
         public static void ConvertWithMoreRegions(string bmpFilePath, string jpegFilePath, int quality = 95, int regionCount = 4)
         {
             if (regionCount < 1) throw new ArgumentOutOfRangeException("number of regions must be positive");
@@ -80,11 +93,30 @@ namespace MultithreadEncodeOpenCV
                 File.Delete(jpegFilePath);
             }
 
+            var stream = new FileStream(bmpFilePath, FileMode.Open);
+            var buffer = new byte[stream.Length];
+
+            if (stream.Length == 0) throw new Exception("cannot get file type");
+
+            stream.Read(buffer, 0, buffer.Length);
+
+            var charbuffer = ASCIIEncoding.ASCII.GetString(buffer);
+
             var bmpMat = Cv2.ImRead(bmpFilePath);
 
             if (bmpMat.Empty())
             {
-                throw new Exception("Input BMP image is invalid");
+                string invalidType = string.Empty;
+                foreach (var keyval in imageSignature)
+                {
+                    if (charbuffer.Contains(keyval.Key))
+                    {
+                        invalidType = keyval.Value;
+                        break;
+                    }
+                }
+                
+                throw new ArgumentException("Input BMP image is invalid", new Exception($"file signature: {string.Join(" ",charbuffer.Take(10))})"+ ((invalidType == string.Empty)?"":$"\n possible file type: {invalidType}")));
             }
 
             var tasks = new Task<Mat>[Environment.ProcessorCount];

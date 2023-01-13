@@ -6,7 +6,7 @@
     },
     "Profile 1": {
       "commandName": "Project",
-      "commandLineArgs": "--bmpFile \"C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\lena_gray.bmp\" --resultFile \"C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\results\\boats24.jpeg\"\r\n--quality 60"
+      "commandLineArgs": "--bmpFile \"C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\lena_gray2.bmp\" --resultFile \"C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\results\\boats24.jpeg\"\r\n--quality 60"
     }
   }
 }

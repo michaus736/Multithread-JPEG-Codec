@@ -10,22 +10,16 @@ using BenchmarkDotNet.Attributes;
 using MultithreadEncodeOpenCV;
 
 namespace Multithread_JPEG_Codec.Benchmarks;
-
+[RPlotExporter]
 [SimpleJob]
-[MemoryDiagnoser]
-[ThreadingDiagnoser]
-[BenchmarkDotNet.Attributes.MedianColumn]
-[BenchmarkDotNet.Attributes.MeanColumn]
-[BenchmarkCategory("Conversion")]
+//[MemoryDiagnoser]
+//[ThreadingDiagnoser]
+//[BenchmarkDotNet.Attributes.MedianColumn]
+//[BenchmarkDotNet.Attributes.MeanColumn]
+//[BenchmarkCategory("Conversion")]
 public class BmpToJpegConverterBenchmarks
 {
-    public static readonly string[] InputBmpFileNames =
-    {
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\boats24.bmp",
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\lena24.bmp",
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\MARBLES.BMP",
-        "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\sample_5184×3456.bmp"
-    };
+
 
     public static readonly string ResultsFolder = "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\results\\";
     public static readonly string InputFolder = "C:\\Users\\micha\\OneDrive\\Obrazy\\jpeg test pictures\\";
@@ -74,7 +68,9 @@ public class BmpToJpegConverterBenchmarks
         BmpToJpegConverter.Convert(
             inputBmpFileName,
             outputJpegFileName,
-            Quality);
+            Quality,
+            0);
+        
 
         stopwatch.Stop();
         Console.WriteLine($"Conversion took {stopwatch.ElapsedMilliseconds} milliseconds");

@@ -11,9 +11,9 @@ namespace TestProject;
 
 public class BMPTests
 {
-    string[] bmpFilesPaths;
-    string bmpPath = @"C:\Users\micha\OneDrive\Obrazy\jpeg test pictures\boats24.bmp";
     string bmpDirectory;
+    private string[] bmpFilesPaths;
+
     public BMPTests()
     {
         ConfigurationFileMap fileMap = new ConfigurationFileMap(@"C:\workspace\dotnet\Multithread JPEG Codec\App.config");
