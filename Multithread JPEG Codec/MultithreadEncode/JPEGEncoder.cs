@@ -116,7 +116,7 @@ namespace MultithreadEncodeOpenCV
                     }
                 }
                 
-                throw new ArgumentException("Input BMP image is invalid", new Exception($"file signature: {string.Join(" ",charbuffer.Take(10))})"+ ((invalidType == string.Empty)?"":$"\n possible file type: {invalidType}")));
+                throw new ArgumentException("Input BMP image is invalid", new Exception($"file signature: {string.Join(" ",charbuffer.Take(10))})" + ((invalidType == string.Empty)?"":$"\n possible file type: {invalidType}")));
             }
 
             var tasks = new Task<Mat>[Environment.ProcessorCount];
