@@ -50,7 +50,7 @@ if(startArgs.Count == 0)
 try
 {
     if (!startArgs.ContainsKey("bmpFile") || !startArgs.ContainsKey("resultFile")) throw new ArgumentException("'bmpFile' and 'resultFile' arguments are required");
-    if (!Path.Exists(startArgs["bmpFile"])) throw new ArgumentException($"BMP File: {startArgs["BmpFile"]} does not exist");
+    if (!Path.Exists(startArgs["bmpFile"])) throw new ArgumentException($"BMP File: {startArgs["bmpFile"]} does not exist");
     if (!Path.Exists(Path.GetDirectoryName(startArgs["resultFile"]))) throw new ArgumentException($"Directory of result JPEG file: {startArgs["resultFile"]} does not exist\nDirectory: {Path.GetDirectoryName(startArgs["resultFile"])}");
     int quality, resetInterval;
     if(!startArgs.ContainsKey("quality")) quality = 95;
